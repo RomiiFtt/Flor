@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Estilos generales --- */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+            color: #1d1d1f;
+            background-color: #fff0f3; 
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="%23ffb3c6" fill-opacity="0.4" transform="translate(10, 10) scale(1.2)"/><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="%23ffb3c6" fill-opacity="0.4" transform="translate(50, 50) scale(1.2)"/></svg>');
+            background-repeat: repeat;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3em;
+            font-weight: 700;
+            color: #d90429;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            font-weight: 600;
+            color: #2b2d42;
+        }
+
+        /* Menú de navegación flotante */
+        nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #d90429;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #2b2d42;
+        }
+
+        section {
+            padding: 100px 20px;
+            max-width: 900px;
+            margin: auto;
+            text-align: center;
+            min-height: 80vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- Animación interactiva del Corazón --- */
+        @keyframes latido {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.2); }
+            60% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        .contenedor-corazon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 0;
+            transition: gap 0.5s ease;
+            min-height: 150px;
+        }
+
+        .corazon-latiente {
+            font-size: 5em;
+            cursor: pointer;
+            animation: latido 2s infinite;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            
+            /* FIX PARA CELULAR: Nos aseguramos de que esté por encima de todo y reaccione al toque */
+            position: relative;
+            z-index: 10;
+            touch-action: manipulation;
+        }
+
+        .corazon-latiente:hover {
+            filter: drop-shadow(0 0 15px rgba(255, 179, 198, 0.8));
+        }
+
+        .mensaje-oculto {
+            width: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 0; 
+            display: flex;
+            align-items: center;
+            
+            /* FIX PARA CELULAR: Mientras está oculto, no roba clics ni toques */
+            pointer-events: none; 
+        }
+
+        .mensaje-oculto p {
+            margin: 0;
+            min-width: 310px; 
+            color: #1d1d1f;
+            font-size: 1.1em;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .contenedor-corazon.activo { gap: 20px; }
+        .contenedor-corazon.activo .corazon-latiente { animation: none; transform: scale(0.85); cursor: default; }
+        
+        .contenedor-corazon.activo .mensaje-oculto { 
+            width: 350px; 
+            opacity: 1; 
+            padding: 20px; 
+            /* FIX PARA CELULAR: Vuelve a estar activo cuando se abre */
+            pointer-events: auto; 
+        }
+
+        /* --- Tarjetas con tu diseño original de corazones --- */
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 40px;
+            justify-items: center; 
+        }
+
+        .foto-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            width: 100%;
+            max-width: 280px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .foto-card.visible { opacity: 1; transform: translateY(0); }
+        .foto-card:nth-child(odd), .foto-card:nth-child(odd) img { border-radius: 50% 50% 0 50%; }
+        .foto-card:nth-child(even), .foto-card:nth-child(even) img { border-radius: 50% 50% 50% 0; }
+
+        .foto-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 179, 198, 0.6);
+            background: rgba(255, 255, 255, 0.95);
+            cursor: pointer;
+        }
+
+        .foto-card img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            margin-bottom: 15px;
+            transition: transform 0.4s ease;
+        }
+
+        .foto-card:hover img { transform: scale(1.03); }
+
+        .foto-card p { margin: 0; font-size: 1.1em; color: #555; text-align: center; font-weight: 600; transition: color 0.3s ease; }
+        .foto-card:hover p { color: #d90429; }
+
+        /* --- Cartel de Próximamente --- */
+        .banner-proximamente {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            color: #333;
+            padding: 60px 20px;
+            border-radius: 24px;
+            box-shadow: 0 15px 30px rgba(255, 154, 158, 0.4);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .banner-proximamente h3 { font-size: 3em; margin: 0; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .banner-proximamente p { font-size: 1.2em; color: white; margin-top: 10px; }
+
+        /* --- Línea de Tiempo Lateral --- */
+        .timeline-container {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            z-index: 1000;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 10px; 
+            bottom: 10px;
+            width: 4px;
+            transform: translateX(-50%);
+            background: rgba(255, 179, 198, 0.6);
+            border-radius: 4px;
+            z-index: -1;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            left: 50%;
+            top: 10px;
+            width: 4px;
+            transform: translateX(-50%);
+            background: #d90429;
+            border-radius: 4px;
+            z-index: -1;
+            height: 0%; 
+            transition: height 0.4s ease;
+        }
+
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 3px solid rgba(255, 179, 198, 0.8);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .timeline-dot.activo {
+            background: #d90429;
+            border-color: #d90429;
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(217, 4, 41, 0.4);
+        }
+
+        .timeline-dot::after {
+            content: attr(data-title);
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            color: #d90429;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .timeline-dot:hover::after { opacity: 1; }
+
+        /* ========================================= */
+        /* --- ADAPTACIÓN PARA CELULARES (MÓVIL) --- */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            
+            nav { padding: 12px 5px; }
+            nav a { margin: 0 8px; font-size: 0.9em; }
+
+            section { padding: 80px 15px; }
+
+            .timeline-container { display: none; }
+
+            .contenedor-corazon {
+                flex-direction: column; 
+            }
+            .contenedor-corazon.activo .mensaje-oculto {
+                width: 90vw; 
+                max-width: 400px;
+                padding: 15px;
+            }
+            .mensaje-oculto p {
+                min-width: 100%; 
+                font-size: 1em;
+            }
+
+            .banner-proximamente h3 { font-size: 2.2em; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#comienzo">Cómo nos conocimos</a>
+        <a href="#presente">Nuestro Presente</a>
+        <a href="#futuro">Más allá</a>
+    </nav>
+
+    <div class="timeline-container">
+        <div class="timeline-line"></div>
+        <div class="timeline-progress" id="timelineProgress"></div>
+        <a href="#inicio" class="timeline-dot activo" data-target="inicio" data-title="Inicio"></a>
+        <a href="#comienzo" class="timeline-dot" data-target="comienzo" data-title="El Comienzo"></a>
+        <a href="#presente" class="timeline-dot" data-target="presente" data-title="Nuestro Presente"></a>
+        <a href="#futuro" class="timeline-dot" data-target="futuro" data-title="El Futuro"></a>
+    </div>
+
+    <section id="inicio">
+        <h1>Para el amor de mi vida</h1>
+        <p>Un pequeño rincón para guardar nuestros mejores momentos.</p>
+
+        <div class="contenedor-corazon" id="contenedorCorazon">
+            <div class="corazon-latiente" id="corazonLatiente">❤️</div>
+            <div class="mensaje-oculto" id="mensajeOculto">
+                <p>
+                    ¡Feliz cumpleaños, mi amor! ❤️ Quería hacerte algo especial y único, igual que vos. 
+                    Gracias por cada momento, por cada risa y por ser la mejor compañera. 
+                    ¡Te amo con todo mi corazón!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="comienzo">
+        <h2>El comienzo de todo</h2>
+        <div class="galeria">
+            <div class="foto-card">
+                <img src="flor1.jpeg" alt="Selfie abrazados">
+                <p>Nuestras primeras sonrisas</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor2.jpeg" alt="Selfie en el espejo del shopping">
+                <p>Paseando juntos</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor3.jpeg" alt="Selfie desde arriba al aire libre">
+                <p>Días al aire libre</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor4.jpeg" alt="Beso tomando mates">
+                <p>Tardes de mates y amor</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor5.jpeg" alt="Selfie pegaditos">
+                <p>Siempre así de pegaditos</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor13.jpeg" alt="Selfie pegaditos">
+                <p>Siempre así de pegaditos</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="presente">
+        <h2>Nuestro presente</h2>
+        <div class="galeria">
+            <div class="foto-card">
+                <img src="flor6.jpeg" alt="Haciendo caras divertidas">
+                <p>Nuestras caras de siempre</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor7.jpeg" alt="Tomando mate y haciendo caras">
+                <p>Compañeros de mates y locuras</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor8.jpeg" alt="Con un peluche de carpincho">
+                <p>Un carpincho feliz</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor9.jpeg" alt="Mates al sol">
+                <p>Tardes al solcito</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor10.jpeg" alt="Más mates al sol">
+                <p>Disfrutando cada momento</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor11.jpeg" alt="Viajando juntos">
+                <p>De viaje juntos</p>
+            </div>
+            <div class="foto-card">
+                <img src="flor12.jpeg" alt="Beso sorpresa en el viaje">
+                <p>Besos sorpresa en el camino</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="futuro">
+        <div class="banner-proximamente">
+            <h3>Próximamente...</h3>
+            <p>Nuevos recuerdos en construcción 🚧❤️</p>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Interacción del corazón de inicio (Ajustado para asegurar la reacción táctil)
+            const corazon = document.getElementById('corazonLatiente');
+            const contenedor = document.getElementById('contenedorCorazon');
+
+            if(corazon && contenedor) {
+                const activarCorazon = (e) => {
+                    e.preventDefault(); // Evita comportamientos raros del navegador al tocar
+                    contenedor.classList.toggle('activo');
+                };
+                
+                // Escuchamos el clic normal y el toque de pantalla
+                corazon.addEventListener('click', activarCorazon);
+            }
+
+            // 2. Efecto de aparición de los catálogos al hacer scroll
+            const observadorScroll = new IntersectionObserver((entradas) => {
+                entradas.forEach(entrada => {
+                    if (entrada.isIntersecting) {
+                        entrada.target.classList.add('visible');
+                        observadorScroll.unobserve(entrada.target); 
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            const tarjetas = document.querySelectorAll('.foto-card');
+            tarjetas.forEach((tarjeta, index) => {
+                tarjeta.style.transitionDelay = `${(index % 6) * 0.1}s`;
+                observadorScroll.observe(tarjeta);
+            });
+
+            // 3. Lógica para la Línea de Tiempo
+            const sections = document.querySelectorAll('section');
+            const navDots = document.querySelectorAll('.timeline-dot');
+            const timelineProgress = document.getElementById('timelineProgress');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                let activeIndex = 0;
+                navDots.forEach((dot, index) => {
+                    dot.classList.remove('activo');
+                    if (dot.getAttribute('data-target') === current) {
+                        dot.classList.add('activo');
+                        activeIndex = index;
+                    }
+                });
+
+                if (navDots.length > 1) {
+                    const percentage = (activeIndex / (navDots.length - 1)) * 100;
+                    timelineProgress.style.height = `${percentage}%`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
